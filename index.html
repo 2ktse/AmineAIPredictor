@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franck AI Predictor</title>
+    <style>
+        /* Цветовая гамма из 1-го изображения и общие стили */
+        body {
+            background-color: #0c0f12; /* Глубокий темный фон */
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            background-color: #11161b; /* Цвет карточки */
+            border: 1px solid #1a232c;
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Заголовок и теги */
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            color: #21b563; /* Ярко-зеленый из 1-го скрина */
+            font-size: 24px;
+            margin: 0 0 4px 0;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #8a99a8;
+            font-size: 12px;
+            margin: 0 0 16px 0;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tag {
+            background-color: #172029;
+            border: 1px solid #24323f;
+            color: #a0aec0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .author-tag {
+            background-color: #172029;
+            border: 1px solid #24323f;
+            color: #a0aec0;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* Сетка выбора игр */
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 20px 0 12px 0;
+            color: #ffffff;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .game-card {
+            background-color: #17222d; /* Темно-синий/серый оттенок из 1-го скрина */
+            border: 1px solid #202e3d;
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        /* Активная игра с неоновой зеленой рамкой */
+        .game-card.active {
+            border: 1px solid #21b563;
+            box-shadow: 0 0 8px rgba(33, 181, 99, 0.2);
+        }
+
+        .game-card:hover {
+            background-color: #1c2b3a;
+        }
+
+        .game-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Поле ввода */
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: #17222d; /* Инпут как поле ввода кода из 1 скрина */
+            border: 1px solid #21b563; /* Зеленая рамка как у блока на 1 скрине */
+            border-radius: 8px;
+            padding: 14px;
+            color: #21b563;
+            font-size: 16px;
+            box-sizing: border-box;
+            text-align: center;
+            outline: none;
+        }
+
+        .input-field::placeholder {
+            color: #4a5d6e;
+        }
+
+        /* Кнопки действий */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Главная кнопка действия (Зеленая VALIDER из 1 скрина) */
+        .btn-primary {
+            background-color: #21b563;
+            color: #0c0f12;
+        }
+
+        /* Кнопка поддержки Telegram (Приглушенный синий в тон интерфейса) */
+        .btn-telegram {
+            background-color: #2b567a;
+            color: #ffffff;
+            margin-bottom: 0;
+        }
+
+        /* Системные уведомления в стиле 1-го скрина */
+        .alert-text {
+            color: #da4436; /* Красный/оранжевый текст '// 3 codes...' */
+            font-family: monospace;
+            font-size: 11px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div class="header">
+        <h1>Franck AI Predictor</h1>
+        <div class="subtitle">Plateforme d'analyse intelligente • L'Empire CFA</div>
+        
+        <div class="tags-container">
+            <div class="tag">🔒 Sécurisé</div>
+            <div class="tag">📊 AI System</div>
+            <div class="tag">⚡ Real-time</div>
+        </div>
+        <div class="author-tag">👤 Franck Traoré</div>
+    </div>
+
+    <div class="alert-text">// Analyse système disponible aujourd'hui //</div>
+
+    <div class="section-title">Sélectionner un jeu</div>
+    
+    <div class="games-grid">
+        <div class="game-card active">
+            <span class="game-icon">✈️</span>
+            <span>Aviator</span>
+        </div>
+        <div class="game-card">
+            <span class="game-icon">💣</span>
+            <span>Mines</span>
+        </div>
+        <div class="game-card">
+            <span class="game-icon">🍎</span>
+            <span>Apple of Fortune</span>
+        </div>
+        <div class="game-card">
+            <span class="game-icon">⚽</span>
+            <span>Penalty</span>
+        </div>
+    </div>
+    
+    <div class="game-card" style="grid-column: span 2; margin-bottom: 20px;">
+        <span class="game-icon">🐔</span>
+        <span>Chicken Road</span>
+    </div>
+
+    <div class="input-group">
+        <label>Numéro de compte 1xbet</label>
+        <input type="text" class="input-field" placeholder="Entrer 10 chiffres" maxlength="10">
+    </div>
+
+    <button class="btn btn-primary">Lancer l'analyse IA</button>
+    <button class="btn btn-telegram">Telegram Support</button>
+
+</div>
+
+</body>
+</html>
